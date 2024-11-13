@@ -87,7 +87,7 @@ class Objet:
 class Potion(Objet):
     def utiliser(self, perso):
         perso.vie += 20
-        print(f"You use a potion and gain 20 points of life. Your life is now {perso.vie}pv.")
+        print(f"You use a potion and gain 20 pv. Your life is now {perso.vie} pv.")
 
 
 class Attaque_boost(Objet):
@@ -155,7 +155,7 @@ def deplacer_joueur(carte, position, direction):
 
 #fonction pour le combats et gerer le combat
 def combat(perso, monstre):
-    print(f"You attacked by a {monstre.nom} level {monstre.niveau}. You have {perso.vie}")
+    print(f"You attacked by a {monstre.nom} level {monstre.niveau}. You have {perso.vie} pv")
     while perso.vie > 0 and monstre.vie > 0:
         print("\n Possibilities :")
         print("1. Attack the monster")
