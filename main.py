@@ -114,7 +114,7 @@ def deplacer_joueur(carte, position, direction):
         x += 1
     elif direction == "west":
         x -= 1
-    else :
+    else:
         print("Invalid direction")
     if (x, y) in carte:
         return (x, y)
@@ -145,12 +145,13 @@ def combat(perso, monstre):
                 continue
             else:
                 print("Doesn't find your choice")
-                return choix_objet 
+                choix_objet
         elif choix == "3":
             print("You ran away")
-            return 
+            return
         else:
             print("Doesn't find your choice")
+            return choix
 
         if monstre.vie > 0:
             monstre.attaquer(perso)
@@ -174,20 +175,20 @@ def jeu():
 
     if choix_menu == "1":
         nom = input("Enter your name : ")
-        print("Hello, You are here beacause I have choosen you hihihi. You woke in the middle of the forest. You just have knife like weapon, and you have to kill monsters to upgrade you defense, attack and level to kill the final. And for that you have to find him.")
+        print(
+            "Hello, You are here beacause I have choosen you hihihi. You woke in the middle of the forest. You just have knife like weapon, and you have to kill monsters to upgrade you defense, attack and level to kill the final. And for that you have to find him. Good luck !!")
         perso = Perso(nom)
         carte = creer_carte()
         position = (0, 0)
 
     elif choix_menu == "2":
         print("Load game functionality not implemented yet.")
-        return choix_menu
     elif choix_menu == "3":
         print("Thank you for playing. Bye")
     else:
         print("Invalid choice. Exiting the game.")
-        
-        
+        return choix_menu
+
     while True:
         print(carte[position])
         if position == (3, 3):
@@ -213,7 +214,6 @@ def jeu():
             objet = random.choice([Potion("Potion"), Attaque_boost("Attack Boost"), Defense_boost("Defense Boost")])
             perso.inventaire.append(objet)
             print(f"You find a {objet.nom}!")
-            
 
 
 if __name__ == "__main__":
