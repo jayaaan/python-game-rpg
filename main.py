@@ -1,6 +1,7 @@
 import random
+import pickle
 
-
+#class pour le perso
 class Perso:
     def __init__(self, nom):
         self.nom = nom
@@ -33,28 +34,48 @@ class Perso:
         monstre.vie -= attaque
         print(f"You attacked {monstre.nom} and inflicted {attaque} dammage. The monster has now {monstre.vie}pv.")
 
-
+#class pour le monstre
 class Monstre:
     noms_des_monstre_par_niveau = {
-        1: ["Goblin", "Ogre", "Skeleton"],
-        2: ["Dragon", "Mortare", "Wicher"],
-        3: ["Ninja", "Troll", "Gargoyle"],
-        4: ["Zombie", "Giant", "Elf"]
+        1 : ["Goblin", "Ogre", "Skeleton"],
+        2 : ["Dragon", "Mortare", "Wicher"],
+        3 : ["Ninja", "Troll", "Gargoyle"],
+        4 : ["Zombie", "Giant", "Elf"],
+        5 : ["Felyne", "Diablos", "Rathalos"],
+        6 : ["Kirin", "Fatalis", "Kelbi"],
+        7 : ["Omega", "einherjar", "Wulver"],
+        8 : ["Anteka", "Ukanlos", "Baldur"]
     }
 
     def __init__(self, nom, niveau):
         self.nom = random.choice(self.noms_des_monstre_par_niveau.get(niveau, ["Unknown monster"]))
         self.niveau = niveau
         self.vie = 40 + niveau * 10
-        self.attaque = 5 + niveau * 2
-        self.defense = 2 + niveau
+        self.attaque = 5 + niveau * 5
+        self.defense = 2 + niveau * 3
 
     def attaquer(self, perso):
         dommage = max(0, self.attaque - perso.defense)
         perso.vie -= dommage
         print(f"{self.nom} attacked you and inflicted you {dommage} dammage. You have now {perso.vie}pv")
 
+#class pour la sauvegarde
+class GameState:
+    def __init__(self, perso, position):
+        self.perso = perso
+        self.position = position
 
+    def sauvegarder(self, fichier):
+        with open(fichier, 'wb') as f:
+            pickle.dump(self, f)
+
+    @staticmethod
+    def charger(fichier):
+        with open(fichier, 'rb') as f:
+            return pickle.load(f)
+
+
+#class pour les objets
 class Objet:
     def __init__(self, nom):
         self.nom = nom
@@ -62,7 +83,7 @@ class Objet:
     def utiliser(self, perso):
         pass
 
-
+#class pour les potion et attaque boost etc (c'est mieux de faire des class pour les 3, je comprends mieux)
 class Potion(Objet):
     def utiliser(self, perso):
         perso.vie += 20
@@ -81,7 +102,7 @@ class Defense_boost(Objet):
         perso.defense += 5
         print(f"You used an item that increase to 5 your defense. Your defense is now {perso.defense}.")
 
-
+#la fonction pour creer la caarte
 def creer_carte():
     carte = {
         (0, 0): "You are in the middle of the forest, there are a lot of trees.",
@@ -103,7 +124,7 @@ def creer_carte():
     }
     return carte
 
-
+#la fonction pour deplacer le joueur
 def deplacer_joueur(carte, position, direction):
     x, y = position
     if direction == "north":
@@ -116,13 +137,14 @@ def deplacer_joueur(carte, position, direction):
         x -= 1
     else:
         print("Invalid direction")
+
     if (x, y) in carte:
         return (x, y)
     else:
         print("You can't go there.")
         return position
 
-
+#fonction pour le combats et gerer le combat
 def combat(perso, monstre):
     print(f"You attacked by a {monstre.nom} level {monstre.niveau}")
     while perso.vie > 0 and monstre.vie > 0:
@@ -158,13 +180,12 @@ def combat(perso, monstre):
 
     if perso.vie < 1:
         print(f"You were defeated by the {monstre.nom}...")
-        print("You will return to the MAIN MENU to start again the game.")
-        return jeu()
+        print("Returning to the MAIN MENU.")
     else:
         print(f"You won, you kill the {monstre.nom}")
         perso.gagner_xp(monstre.niveau * 10)
 
-
+#fonction pour le jeu, son fonctonnement etc
 def jeu():
     print("Welcome")
     print("MAIN MENU :")
@@ -173,7 +194,7 @@ def jeu():
     print("3. Exit")
     choix_menu = input("Select to continue : ")
 
-    if choix_menu == "1":
+    if choix_menu == "1" :
         nom = input("Enter your name : ")
         print(
             "Hello, You are here beacause I have choosen you hihihi. You woke in the middle of the forest. You just have knife like weapon, and you have to kill monsters to upgrade you defense, attack and level to kill the final. And for that you have to find him. Good luck !!")
@@ -181,13 +202,28 @@ def jeu():
         carte = creer_carte()
         position = (0, 0)
 
-    elif choix_menu == "2":
-        print("Load game functionality not implemented yet.")
-    elif choix_menu == "3":
+
+
+    elif choix_menu == "2" :
+
+        fichier = input("Enter the name of the save file: ")
+
+        try:
+            game_state = GameState.charger(fichier)
+            perso = game_state.perso
+            position = game_state.position
+            carte = creer_carte()
+            print(f"Welcome back, {perso.nom}!")
+
+        except FileNotFoundError:
+
+            print("Save file not found. Returning to main menu.")
+
+            return jeu()
+    elif choix_menu == "3" :
         print("Thank you for playing. Bye")
     else:
         print("Invalid choice. Exiting the game.")
-        return choix_menu
 
     while True:
         print(carte[position])
@@ -200,10 +236,19 @@ def jeu():
             else:
                 print("Congratulations, you won the BOSS ! And go out of the forest.")
                 break
-        direction = input("Enter a direction (north, south, east, west) or 'quit' to quit the game : ")
+        direction = input("Enter a direction (north, south, east, west) or 'quit' to quit the game or 'save' to save the game : ")
         if direction == 'quit':
             print("Thank you for playing. Bye")
             break
+
+
+        elif direction == 'save':
+
+            fichier = input("Enter the name of the save file: ")
+            game_state = GameState(perso, position,)
+            game_state.sauvegarder(fichier)
+            print("Game saved successfully.")
+            continue
 
         position = deplacer_joueur(carte, position, direction)
 
