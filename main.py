@@ -181,6 +181,7 @@ def combat(perso, monstre):
     if perso.vie < 1:
         print(f"You were defeated by the {monstre.nom}...")
         print("Returning to the MAIN MENU.")
+        return jeu()
     else:
         print(f"You won, you kill the {monstre.nom}")
         perso.gagner_xp(monstre.niveau * 10)
