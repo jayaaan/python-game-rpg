@@ -120,7 +120,16 @@ def creer_carte():
         (2, 3): "You encounter a group of friendly animals.",
         (3, 1): "You discover a hidden treasure chest.",
         (3, 2): "You are in a dense, foggy area.",
-        (3, 3): "You are in front of the final boss in a dark cavern."
+        (3, 3): "You find a hidden entrance to a dungeon.",
+        (4, 0): "You see a tall, ancient tree.",
+        (0, 4): "You find a small pond with clear water.",
+        (1, 4): "You encounter a group of travelers.",
+        (2, 4): "You find a hidden path leading to a secret",
+        (3, 4): "You see a mysterious statue.",
+        (4, 1): "You find a small hut with a wise old man.",
+        (4, 2): "You find a hidden entrance to a secret passage.",
+        (4, 3): "You find a hidden entrance to a secret chamber.",
+        (4, 4): "You are in front of the final boss in a dark cavern."
     }
     return carte
 
@@ -146,7 +155,7 @@ def deplacer_joueur(carte, position, direction):
 
 #fonction pour le combats et gerer le combat
 def combat(perso, monstre):
-    print(f"You attacked by a {monstre.nom} level {monstre.niveau}")
+    print(f"You attacked by a {monstre.nom} level {monstre.niveau}. You have {perso.vie}")
     while perso.vie > 0 and monstre.vie > 0:
         print("\n Possibilities :")
         print("1. Attack the monster")
@@ -167,7 +176,7 @@ def combat(perso, monstre):
                 continue
             else:
                 print("Doesn't find your choice")
-                choix_objet
+                return choix_objet
         elif choix == "3":
             print("You ran away")
             return
@@ -197,8 +206,8 @@ def jeu():
 
     if choix_menu == "1" :
         nom = input("Enter your name : ")
-        print(
-            "Hello, You are here beacause I have choosen you hihihi. You woke in the middle of the forest. You just have knife like weapon, and you have to kill monsters to upgrade you defense, attack and level to kill the final. And for that you have to find him. Good luck !!")
+        print("Hello, You are here beacause I have choosen you hihihi. You woke in the middle of the forest. You just have knife like weapon, and you have to kill monsters to upgrade you defense, attack and level to kill the final. And for that you have to find him. Good luck !!")
+        print("And if you find the BOSS, you can't run away, you will fight with him for sure. HAHAHA")
         perso = Perso(nom)
         carte = creer_carte()
         position = (0, 0)
@@ -234,9 +243,11 @@ def jeu():
             if perso.vie < 1:
                 print("You defeat, the BOSS wins!")
                 break
-            else:
+            elif boss.vie < 1 :
                 print("Congratulations, you won the BOSS ! And go out of the forest.")
                 break
+            else :
+                continue
         direction = input("Enter a direction (north, south, east, west) or 'quit' to quit the game or 'save' to save the game : ")
         if direction == 'quit':
             print("Thank you for playing. Bye")
@@ -254,7 +265,7 @@ def jeu():
         position = deplacer_joueur(carte, position, direction)
 
         if random.random() < 0.5:
-            monstre = Monstre("Monstre", random.randint(1, 4))
+            monstre = Monstre("Monstre", random.randint(1, 8))
             combat(perso, monstre)
         else:
             objet = random.choice([Potion("Potion"), Attaque_boost("Attack Boost"), Defense_boost("Defense Boost")])
