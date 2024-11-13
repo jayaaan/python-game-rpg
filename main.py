@@ -48,11 +48,11 @@ class Monstre:
     }
 
     def __init__(self, nom, niveau):
-        self.nom = random.choice(self.noms_des_monstre_par_niveau.get(niveau, ["Unknown monster"]))
+        self.nom = random.choice(self.noms_des_monstre_par_niveau.get(niveau, ["KRATOS"]))
         self.niveau = niveau
         self.vie = 40 + niveau * 10
         self.attaque = 5 + niveau * 5
-        self.defense = 2 + niveau * 3
+        self.defense = 2 + niveau * 2
 
     def attaquer(self, perso):
         dommage = max(0, self.attaque - perso.defense)
