@@ -279,4 +279,4 @@ def jeu():
             print(f"You find a {objet.nom}!")
 
 if __name__ == "__main__":
-    jeu()  
+    jeu()
